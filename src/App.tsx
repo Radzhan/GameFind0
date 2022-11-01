@@ -1,24 +1,58 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import Items from "./items";
 
 function App() {
+  const randomValue = Math.floor(Math.random() * 35);
+
+  const [mainValue] = useState(randomValue)
+
+  const createItems = () => {
+    const array = []
+    for (let i = 0; i < 36; i++) {
+      const arrayInner = {hasItem: false, clicked: false};
+      array.push(arrayInner)
+    }
+    array[randomValue].hasItem = true
+    return array
+  }
+  let className = 'bacgroundB'
+
+  const [counter, setCounter] = useState(0)
+
+  const [items, setItems] = useState(createItems())
+
+  const changeState = (index: number) => {
+    let value = counter
+    value++
+    setCounter(value)
+    const copyItems = [...items]
+    copyItems[index].clicked = true
+    className = 'bacgroundW'
+    setItems(copyItems)
+    if (index === mainValue){
+      alert('U are win')
+    }
+  }
+
+  const OText = (index: number) => {
+    if (index === mainValue) {
+      return 'O'
+    } else {
+      return ''
+    }
+  }
+
+  let createItem = items.map((item, index) => (
+    <Items key={index} state={() => changeState(index)} classNames={className} O={OText(index)}/>
+  ))
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <p>trise: {counter}</p>
+      <div className='itemsList'>
+        {createItem}
+      </div>
     </div>
   );
 }
